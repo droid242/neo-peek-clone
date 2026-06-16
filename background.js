@@ -1,0 +1,25 @@
+const RULES = [
+  {
+    id: 1,
+    priority: 1,
+    action: {
+      type: "modifyHeaders",
+      responseHeaders: [
+        { header: "X-Frame-Options", operation: "remove" },
+        { header: "Content-Security-Policy", operation: "remove" }
+      ]
+    },
+    condition: {
+      urlFilter: "*",
+      resourceTypes: ["sub_frame"]
+    }
+  }
+];
+
+// Szabályok regisztrálása induláskor
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: [1],
+    addRules: RULES
+  });
+});

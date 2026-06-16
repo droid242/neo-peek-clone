@@ -1,0 +1,141 @@
+/* 1. A felugró kis lebegő link-gomb (Peek ikon) */
+.neo-peek-trigger-btn {
+  position: absolute;
+  z-index: 2147483647;
+  width: 24px;  
+  height: 24px; 
+  background: transparent !important; 
+  border: none !important;            
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
+  border-radius: 6px;                 
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeInIcon 0.2s ease-out forwards;
+  transition: filter 0.15s ease; /* Csak a szűrő animálódik */
+}
+
+/* Hover állapot: nincs skálázás, csak tűéles fényerő és árnyék */
+.neo-peek-trigger-btn:hover {
+  filter: brightness(1.15) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+
+.neo-peek-trigger-btn svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Mögöttes sötétítés */
+.neo-peek-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6); 
+  z-index: 2147483640; 
+  backdrop-filter: blur(2px); 
+  animation: fadeInOverlay 0.2s ease-out;
+}
+
+/* A nagy Peek ablak konténer */
+.neo-peek-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70vw;
+  height: 90vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  z-index: 2147483641; 
+  border: 1px solid #374151;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; 
+  animation: peekSlideIn 0.3s ease-out;
+}
+
+/* Fix felső fejléc sáv */
+.neo-peek-header {
+  height: 45px;
+  background: #1f2937; 
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 0 15px;
+  border-bottom: 1px solid #374151;
+  box-sizing: border-box;
+}
+
+/* Bal oldali dinamikus cím */
+.neo-peek-title {
+  color: #d1d5db;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  max-width: 60%; 
+}
+
+/* Jobb oldali gombcsoport */
+.neo-peek-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 2. A fejléc két SVG gombjának alapstílusa */
+.neo-peek-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  width: 24px;  
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.15s ease; /* Itt is csak a szűrő animálódik, mozgás nincs */
+}
+
+/* Fejléc gombok hover állapota: Tisztán elmosódásmentes felvillanás */
+.neo-peek-btn:hover {
+  filter: brightness(1.2) drop-shadow(0 1px 4px rgba(0,0,0,0.3));
+}
+
+.neo-peek-btn svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Az iframe */
+.neo-peek-iframe {
+  width: 100%;
+  flex-grow: 1; 
+  border: none;
+  background: white;
+  display: block;
+}
+
+@keyframes fadeInIcon {
+  to { opacity: 1; }
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes peekSlideIn {
+  from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
