@@ -30,14 +30,14 @@ function shouldSkipLink(link) {
 
 document.addEventListener('mouseover', (e) => {
   const link = e.target.closest('a');
-  
+
   if (link && link.href && link.href.startsWith('http')) {
     clearTimeout(leaveTimer);
     if (shouldSkipLink(link)) return;
-    
+
     // Ha már kezeljük ezt a linket, ne indítsuk újra a timert
     if (currentLink === link) return;
-    
+
     currentLink = link;
     clearTimeout(hoverTimer);
 
@@ -71,7 +71,7 @@ function showTriggerButton(link) {
   triggerBtn = document.createElement('button');
   triggerBtn.className = 'neo-peek-trigger-btn';
   triggerBtn.title = 'Előnézet (Peek)';
-  
+
   triggerBtn.innerHTML = `
     <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
     <g transform="matrix(0.9,0,0,0.9,1.2,1.2)">
@@ -95,20 +95,28 @@ function showTriggerButton(link) {
     </g>
 </svg>
   `;
-  
-  // Kvadráns-logika: a kurzor képernyőn belüli helyzetétől függően
-  // az ikon az ellentétes irányba nyílik, hogy ne lógjon ki a viewportból
+
+  // Alapból jobbra-fenn jelenik meg, csak akkor vált irányt,
+  // ha a viewport szélébe ütközne
   const iconSize = 24;
   const gap = 10;
-  const toRight = currentClientX < window.innerWidth / 2;
-  const toBottom = currentClientY < window.innerHeight / 2;
-  const posLeft = toRight ? currentMouseX + gap : currentMouseX - iconSize - gap;
-  const posTop = toBottom ? currentMouseY + gap : currentMouseY - iconSize - gap;
+
+  let posLeft = currentMouseX + gap;
+  let posTop  = currentMouseY - iconSize - gap;
+
+  // Ha jobbra kilógna → balra toljuk
+  if (currentClientX + gap + iconSize > window.innerWidth) {
+    posLeft = currentMouseX - iconSize - gap;
+  }
+  // Ha felfelé kilógna → lefele toljuk
+  if (currentClientY - iconSize - gap < 0) {
+    posTop = currentMouseY + gap;
+  }
 
   triggerBtn.style.position = 'absolute';
   triggerBtn.style.left = `${posLeft}px`;
-  triggerBtn.style.top = `${posTop}px`;
-  
+  triggerBtn.style.top  = `${posTop}px`;
+
   triggerBtn.addEventListener('mouseenter', () => clearTimeout(leaveTimer));
   triggerBtn.addEventListener('mouseleave', () => {
     leaveTimer = setTimeout(() => removeTriggerButton(), 300);
