@@ -1,6 +1,9 @@
 # Chrome extension build artifacts
 _metadata/
 
+# Affinity Designer source files (local only)
+*.af
+
 # OS
 .DS_Store
 Thumbs.db
