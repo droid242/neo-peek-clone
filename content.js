@@ -5,6 +5,10 @@ if (typeof hoverTimer === 'undefined') {
   var triggerBtn = null;
   var peekContainer = null;
   var peekOverlay = null;
+  var currentMouseX = 0;
+  var currentMouseY = 0;
+  var currentClientX = 0;
+  var currentClientY = 0;
 }
 
 const EXCLUDED_WORDS = [/^\d+$/, /next/i, /prev/i, /page/i, /köv/i, /előző/i, /lapoz/i, /mutass/i, /show/i];
@@ -31,18 +35,16 @@ document.addEventListener('mouseover', (e) => {
     clearTimeout(leaveTimer);
     if (shouldSkipLink(link)) return;
     
-    // Ha ugyanazon a linken vagyunk, DE az ikon valamiért eltűnt (nincs triggerBtn),
-    // akkor engedjük, hogy újra létrejöjjön!
-    if (currentLink === link && triggerBtn) return;
+    // Ha már kezeljük ezt a linket, ne indítsuk újra a timert
+    if (currentLink === link) return;
     
     currentLink = link;
     clearTimeout(hoverTimer);
 
-    const mouseX = e.pageX;
-    const mouseY = e.pageY;
-
+    // A pillanatnyi pozíciót a timer tüzelésekor vesszük (mousemove trackingből),
+    // így az ikon mindig oda kerül, ahol a kurzor ténylegesen van
     hoverTimer = setTimeout(() => {
-      showTriggerButton(link, mouseX, mouseY);
+      showTriggerButton(link);
     }, 250);
   }
 });
@@ -55,7 +57,15 @@ document.addEventListener('mouseout', (e) => {
   }
 });
 
-function showTriggerButton(link, mouseX, mouseY) {
+// Folyamatosan követjük a kurzor pillanatnyi pozícióját
+document.addEventListener('mousemove', (e) => {
+  currentMouseX = e.pageX;
+  currentMouseY = e.pageY;
+  currentClientX = e.clientX;
+  currentClientY = e.clientY;
+});
+
+function showTriggerButton(link) {
   removeTriggerButton();
 
   triggerBtn = document.createElement('button');
@@ -86,9 +96,18 @@ function showTriggerButton(link, mouseX, mouseY) {
 </svg>
   `;
   
+  // Kvadráns-logika: a kurzor képernyőn belüli helyzetétől függően
+  // az ikon az ellentétes irányba nyílik, hogy ne lógjon ki a viewportból
+  const iconSize = 24;
+  const gap = 10;
+  const toRight = currentClientX < window.innerWidth / 2;
+  const toBottom = currentClientY < window.innerHeight / 2;
+  const posLeft = toRight ? currentMouseX + gap : currentMouseX - iconSize - gap;
+  const posTop = toBottom ? currentMouseY + gap : currentMouseY - iconSize - gap;
+
   triggerBtn.style.position = 'absolute';
-  triggerBtn.style.top = `${mouseY - 25}px`;
-  triggerBtn.style.left = `${mouseX + 15}px`;
+  triggerBtn.style.left = `${posLeft}px`;
+  triggerBtn.style.top = `${posTop}px`;
   
   triggerBtn.addEventListener('mouseenter', () => clearTimeout(leaveTimer));
   triggerBtn.addEventListener('mouseleave', () => {
