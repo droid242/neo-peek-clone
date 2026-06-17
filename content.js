@@ -15,6 +15,7 @@ if (typeof hoverTimer === 'undefined') {
 }
 
 const EXCLUDED_WORDS = [/^\d+$/, /next/i, /prev/i, /page/i, /köv/i, /előző/i, /lapoz/i, /mutass/i, /show/i];
+const IMAGE_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|tiff|heic)(\?.*)?$/i;
 
 function shouldSkipLink(link) {
   const linkText = link.innerText.trim();
@@ -22,11 +23,31 @@ function shouldSkipLink(link) {
 
   if (!linkHref || linkHref.startsWith('#') || linkHref.startsWith('javascript:')) return true;
 
+  // Közvetlen kép-linkek kiszűrése (pl. galéria képek megnyitása előtt)
+  if (IMAGE_EXTENSIONS.test(linkHref)) return true;
+
+  // Kizárt szövegek (pl. oldalszámok, lapozás kulcsszavai)
   const isExcludedText = EXCLUDED_WORDS.some(regex => regex.test(linkText));
   if (isExcludedText) return true;
 
+  // Lightbox, galéria és lapozás osztályok/attribútumok ellenőrzése
   const linkClassAndTitle = (link.className + ' ' + (link.title || '')).toLowerCase();
-  if (linkClassAndTitle.includes('pagination') || linkClassAndTitle.includes('pager')) return true;
+  const relAttr = (link.getAttribute('rel') || '').toLowerCase();
+  const hasLightboxAttribute = link.hasAttribute('data-lightbox') || 
+                               link.hasAttribute('data-fancybox') || 
+                               link.hasAttribute('data-gallery');
+
+  if (
+    linkClassAndTitle.includes('pagination') || 
+    linkClassAndTitle.includes('pager') ||
+    linkClassAndTitle.includes('lightbox') ||
+    linkClassAndTitle.includes('gallery') ||
+    relAttr.includes('lightbox') ||
+    relAttr.includes('gallery') ||
+    hasLightboxAttribute
+  ) {
+    return true;
+  }
 
   return false;
 }
