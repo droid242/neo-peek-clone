@@ -24,5 +24,17 @@
         "styles.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pic/peek.svg",
+        "pic/w.svg",
+        "pic/x.svg"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ]
 }

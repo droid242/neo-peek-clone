@@ -113,29 +113,8 @@ function showTriggerButton(link) {
   triggerBtn.className = 'neo-peek-trigger-btn';
   triggerBtn.title = 'Előnézet (Peek)';
 
-  triggerBtn.innerHTML = `
-    <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <g transform="matrix(0.9,0,0,0.9,1.2,1.2)">
-        <circle cx="12" cy="12" r="10" style="fill:#d1002e;"/>
-    </g>
-    <path d="M12,2C17.519,2 22,6.481 22,12C22,17.519 17.519,22 12,22C6.481,22 2,17.519 2,12C2,6.481 6.481,2 12,2ZM12,3C7.033,3 3,7.033 3,12C3,16.967 7.033,21 12,21C16.967,21 21,16.967 21,12C21,7.033 16.967,3 12,3Z" style="fill:#1f2937;"/>
-    <g transform="matrix(5,0,0,2.5,-39,-6.5)">
-        <path d="M9.4,7L9,7L9,5.4C9,5.294 9.021,5.192 9.059,5.117C9.096,5.042 9.147,5 9.2,5L10,5L10,5.8L9.8,5.8C9.694,5.8 9.592,5.884 9.517,6.034C9.442,6.184 9.4,6.388 9.4,6.6L9.4,7Z" style="fill:#9ca3af;"/>
-    </g>
-    <g transform="matrix(5,0,0,-2.5,-39,30.5)">
-        <path d="M9.4,7L9,7L9,5.4C9,5.294 9.021,5.192 9.059,5.117C9.096,5.042 9.147,5 9.2,5L10,5L10,5.8L9.8,5.8C9.694,5.8 9.592,5.884 9.517,6.034C9.442,6.184 9.4,6.388 9.4,6.6L9.4,7Z" style="fill:#9ca3af;"/>
-    </g>
-    <g transform="matrix(0,5,-2.5,0,30.5,-39)">
-        <path d="M9.4,7L9,7L9,5.4C9,5.294 9.021,5.192 9.059,5.117C9.096,5.042 9.147,5 9.2,5L10,5L10,5.8L9.8,5.8C9.694,5.8 9.592,5.884 9.517,6.034C9.442,6.184 9.4,6.388 9.4,6.6L9.4,7Z" style="fill:#9ca3af;"/>
-    </g>
-    <g transform="matrix(0,-5,-2.5,-0,30.5,63)">
-        <path d="M9.4,7L9,7L9,5.4C9,5.294 9.021,5.192 9.059,5.117C9.096,5.042 9.147,5 9.2,5L10,5L10,5.8L9.8,5.8C9.694,5.8 9.592,5.884 9.517,6.034C9.442,6.184 9.4,6.388 9.4,6.6L9.4,7Z" style="fill:#9ca3af;"/>
-    </g>
-    <g transform="matrix(0.666667,0,0,0.666667,4,4)">
-        <circle cx="12" cy="12" r="3" style="fill:#9ca3af;"/>
-    </g>
-</svg>
-  `;
+  // Betöltés a pic/peek.svg fájlból
+  triggerBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/peek.svg')}" alt="Peek" />`;
 
   triggerBtn.style.position = 'absolute';
   updateTriggerButtonPosition();
@@ -192,48 +171,21 @@ function openPeekWindow(url) {
   const actionsContainer = document.createElement('div');
   actionsContainer.className = 'neo-peek-actions';
 
-  // "Megnyitás új lapon" gomb (w.svg)
+  // "Megnyitás új lapon" gomb (w.svg-ből betöltve)
   const openTabBtn = document.createElement('button');
   openTabBtn.className = 'neo-peek-btn';
   openTabBtn.title = 'Megnyitás új lapon';
-  openTabBtn.innerHTML = `
-    <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
-    <path d="M22,4L22,20C22,21.104 21.104,22 20,22L4,22C2.896,22 2,21.104 2,20L2,4C2,2.896 2.896,2 4,2L20,2C21.104,2 22,2.896 22,4Z" style="fill:#9ca3af;"/>
-    <g transform="matrix(-0.702826,0,0,0.702826,20.433917,3.566083)">
-        <g transform="matrix(-1.422826,0,0,1.422826,29.073917,-5.073917)">
-            <path d="M18.028,11.699L18.028,5.972L12.301,5.972" style="fill:none;stroke:#1f2937;stroke-width:2px;"/>
-            <path d="M11.699,18.028L5.972,18.028L5.972,12.301" style="fill:none;stroke:#1f2937;stroke-width:2px;"/>
-            <path d="M18.028,5.972C15.443,8.557 8.557,15.443 5.972,18.028" style="fill:none;stroke:#1f2937;stroke-width:2px;stroke-linejoin:round;stroke-miterlimit:1.5;"/>
-        </g>
-    </g>
-    <g transform="matrix(1.986065,0,0,1.986065,-4.902454,-4.902454)">
-        <path d="M7,4.972L7,5.993C6.733,5.993 6.477,6.099 6.288,6.288C6.099,6.477 5.993,6.733 5.993,7L4.972,7L4.972,4.972L7,4.972Z" style="fill:#1f2937;"/>
-    </g>
-    <g transform="matrix(1.986065,0,0,1.986065,5.12581,5.12581)">
-        <path d="M7,4.972L7,7L4.972,7L4.972,5.979C5.239,5.979 5.495,5.873 5.684,5.684C5.873,5.495 5.979,5.239 5.979,4.972L7,4.972Z" style="fill:#1f2937;"/>
-    </g>
-</svg>
-  `;
+  openTabBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/w.svg')}" alt="Open Tab" />`;
   openTabBtn.addEventListener('click', () => {
     window.open(url, '_blank');
     closePeekWindow();
   });
 
-  // "Bezárás" gomb (x.svg)
+  // "Bezárás" gomb (x.svg-ből betöltve)
   const closeBtn = document.createElement('button');
   closeBtn.className = 'neo-peek-btn neo-peek-close-btn';
   closeBtn.title = 'Bezárás';
-  closeBtn.innerHTML = `
-    <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.5;">
-    <path d="M22,4L22,20C22,21.104 21.104,22 20,22L4,22C2.896,22 2,21.104 2,20L2,4C2,2.896 2.896,2 4,2L20,2C21.104,2 22,2.896 22,4Z" style="fill:#d1002e;"/>
-    <g transform="matrix(0.651413,-0.051413,-0.051413,0.651413,4.8,4.8)">
-        <path d="M2,2L22,22" style="fill:none;stroke:#1f2937;stroke-width:5px;"/>
-    </g>
-    <g transform="matrix(-0.651413,-0.051413,0.051413,0.651413,19.2,4.8)">
-        <path d="M2,2L22,22" style="fill:none;stroke:#1f2937;stroke-width:5px;"/>
-    </g>
-</svg>
-  `;
+  closeBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/x.svg')}" alt="Close" />`;
   closeBtn.addEventListener('click', closePeekWindow);
 
   actionsContainer.appendChild(openTabBtn);
@@ -265,6 +217,11 @@ function openPeekWindow(url) {
 
   peekContainer.appendChild(iframe);
   document.body.appendChild(peekContainer);
+  
+  // Fókusz beállítása az Escape esemény azonnali kezeléséhez
+  peekContainer.tabIndex = -1;
+  peekContainer.focus();
+  
   peekOverlay.addEventListener('click', closePeekWindow);
 }
 
@@ -278,3 +235,10 @@ function closePeekWindow() {
     peekOverlay = null;
   }
 }
+
+// Globális billentyűzet-eseménykezelő az ESC gomb megnyomására
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closePeekWindow();
+  }
+});
