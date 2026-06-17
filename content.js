@@ -9,6 +9,9 @@ if (typeof hoverTimer === 'undefined') {
   var currentMouseY = 0;
   var currentClientX = 0;
   var currentClientY = 0;
+  var lastPlacedX = 0;
+  var lastPlacedY = 0;
+  var isHoveringButton = false;
 }
 
 const EXCLUDED_WORDS = [/^\d+$/, /next/i, /prev/i, /page/i, /köv/i, /előző/i, /lapoz/i, /mutass/i, /show/i];
@@ -57,16 +60,54 @@ document.addEventListener('mouseout', (e) => {
   }
 });
 
-// Folyamatosan követjük a kurzor pillanatnyi pozícióját
+// Folyamatosan követjük a kurzor pillanatnyi pozícióját és szükség szerint frissítjük a gomb helyzetét
 document.addEventListener('mousemove', (e) => {
   currentMouseX = e.pageX;
   currentMouseY = e.pageY;
   currentClientX = e.clientX;
   currentClientY = e.clientY;
+
+  if (triggerBtn && !isHoveringButton && currentLink) {
+    const link = e.target.closest('a');
+    if (link === currentLink) {
+      const distance = Math.hypot(currentMouseX - lastPlacedX, currentMouseY - lastPlacedY);
+      if (distance > 80) {
+        updateTriggerButtonPosition();
+        lastPlacedX = currentMouseX;
+        lastPlacedY = currentMouseY;
+      }
+    }
+  }
 });
+
+function updateTriggerButtonPosition() {
+  if (!triggerBtn) return;
+
+  const iconSize = 24;
+  const gap = 10;
+
+  let posLeft = currentMouseX + gap;
+  let posTop  = currentMouseY - iconSize - gap;
+
+  // Ha jobbra kilógna → balra toljuk
+  if (currentClientX + gap + iconSize > window.innerWidth) {
+    posLeft = currentMouseX - iconSize - gap;
+  }
+  // Ha felfelé kilógna → lefele toljuk
+  if (currentClientY - iconSize - gap < 0) {
+    posTop = currentMouseY + gap;
+  }
+
+  triggerBtn.style.left = `${posLeft}px`;
+  triggerBtn.style.top  = `${posTop}px`;
+}
 
 function showTriggerButton(link) {
   removeTriggerButton();
+  currentLink = link;
+  isHoveringButton = false;
+  lastPlacedX = currentMouseX;
+  lastPlacedY = currentMouseY;
 
   triggerBtn = document.createElement('button');
   triggerBtn.className = 'neo-peek-trigger-btn';
@@ -96,29 +137,15 @@ function showTriggerButton(link) {
 </svg>
   `;
 
-  // Alapból jobbra-fenn jelenik meg, csak akkor vált irányt,
-  // ha a viewport szélébe ütközne
-  const iconSize = 24;
-  const gap = 10;
-
-  let posLeft = currentMouseX + gap;
-  let posTop  = currentMouseY - iconSize - gap;
-
-  // Ha jobbra kilógna → balra toljuk
-  if (currentClientX + gap + iconSize > window.innerWidth) {
-    posLeft = currentMouseX - iconSize - gap;
-  }
-  // Ha felfelé kilógna → lefele toljuk
-  if (currentClientY - iconSize - gap < 0) {
-    posTop = currentMouseY + gap;
-  }
-
   triggerBtn.style.position = 'absolute';
-  triggerBtn.style.left = `${posLeft}px`;
-  triggerBtn.style.top  = `${posTop}px`;
+  updateTriggerButtonPosition();
 
-  triggerBtn.addEventListener('mouseenter', () => clearTimeout(leaveTimer));
+  triggerBtn.addEventListener('mouseenter', () => {
+    isHoveringButton = true;
+    clearTimeout(leaveTimer);
+  });
   triggerBtn.addEventListener('mouseleave', () => {
+    isHoveringButton = false;
     leaveTimer = setTimeout(() => removeTriggerButton(), 300);
   });
 
@@ -137,6 +164,8 @@ function removeTriggerButton() {
     triggerBtn.remove();
     triggerBtn = null;
   }
+  currentLink = null;
+  isHoveringButton = false;
 }
 
 function openPeekWindow(url) {
