@@ -266,6 +266,9 @@ function openPeekWindow(url) {
   // Fókusz beállítása az Escape esemény azonnali kezeléséhez
   peekContainer.tabIndex = -1;
   peekContainer.focus();
+
+  // Háttér görgetés letiltása
+  document.body.style.overflow = 'hidden';
   
   peekOverlay.addEventListener('click', closePeekWindow);
 }
@@ -279,6 +282,8 @@ function closePeekWindow() {
     peekOverlay.remove();
     peekOverlay = null;
   }
+  // Háttér görgetés visszaállítása
+  document.body.style.overflow = '';
 }
 
 // Globális billentyűzet-eseménykezelő az ESC gomb megnyomására
