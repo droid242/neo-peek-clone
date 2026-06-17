@@ -17,6 +17,24 @@ if (typeof hoverTimer === 'undefined') {
 const EXCLUDED_WORDS = [/^\d+$/, /next/i, /prev/i, /page/i, /köv/i, /előző/i, /lapoz/i, /mutass/i, /show/i];
 const IMAGE_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|tiff|heic)(\?.*)?$/i;
 
+const MENU_WORDS_REGEX = /^(home|főoldal|fooldal|about|rólunk|rolunk|bemutatkozás|bemutatkozas|contact|kapcsolat|blog|hírek|hirek|galéria|gallery)$/i;
+const MENU_CLASS_REGEX = /(\b|_|-)nav(\b|_|-|bar|igation|link|item)|menu|navbar/i;
+
+function isInsideMenu(link) {
+  if (link.closest('nav')) return true;
+
+  let el = link;
+  while (el && el !== document.body) {
+    const className = typeof el.className === 'string' ? el.className : '';
+    const id = typeof el.id === 'string' ? el.id : '';
+    if (MENU_CLASS_REGEX.test(className) || MENU_CLASS_REGEX.test(id)) {
+      return true;
+    }
+    el = el.parentElement;
+  }
+  return false;
+}
+
 function shouldSkipLink(link) {
   const linkText = link.innerText.trim();
   const linkHref = link.getAttribute('href');
@@ -29,6 +47,12 @@ function shouldSkipLink(link) {
   // Kizárt szövegek (pl. oldalszámok, lapozás kulcsszavai)
   const isExcludedText = EXCLUDED_WORDS.some(regex => regex.test(linkText));
   if (isExcludedText) return true;
+
+  // Menü kulcsszavak ellenőrzése
+  if (MENU_WORDS_REGEX.test(linkText)) return true;
+
+  // Menü struktúra/szülők ellenőrzése
+  if (isInsideMenu(link)) return true;
 
   // Lightbox, galéria és lapozás osztályok/attribútumok ellenőrzése
   const linkClassAndTitle = (link.className + ' ' + (link.title || '')).toLowerCase();
