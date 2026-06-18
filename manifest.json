@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Neo Peek Clone",
-  "version": "1.0.1",
-  "description": "Neo Browser stílusú link előnézet iframe segítségével.",
+  "version": "2.0.0",
+  "description": "Neo Browser-style link preview via iframe.",
   "permissions": [
     "declarativeNetRequest"
   ],

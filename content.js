@@ -41,20 +41,20 @@ function shouldSkipLink(link) {
 
   if (!linkHref || linkHref.startsWith('#') || linkHref.startsWith('javascript:')) return true;
 
-  // Közvetlen kép-linkek kiszűrése (pl. galéria képek megnyitása előtt)
+  // Filter out direct image links (e.g. opening gallery images)
   if (IMAGE_EXTENSIONS.test(linkHref)) return true;
 
-  // Kizárt szövegek (pl. oldalszámok, lapozás kulcsszavai)
+  // Excluded text patterns (e.g. page numbers, pagination keywords)
   const isExcludedText = EXCLUDED_WORDS.some(regex => regex.test(linkText));
   if (isExcludedText) return true;
 
-  // Menü kulcsszavak ellenőrzése
+  // Check menu keywords
   if (MENU_WORDS_REGEX.test(linkText)) return true;
 
-  // Menü struktúra/szülők ellenőrzése
+  // Check menu structure / parent elements
   if (isInsideMenu(link)) return true;
 
-  // Lightbox, galéria és lapozás osztályok/attribútumok ellenőrzése
+  // Check for lightbox, gallery and pagination classes / attributes
   const linkClassAndTitle = (link.className + ' ' + (link.title || '')).toLowerCase();
   const relAttr = (link.getAttribute('rel') || '').toLowerCase();
   const hasLightboxAttribute = link.hasAttribute('data-lightbox') || 
@@ -83,14 +83,14 @@ document.addEventListener('mouseover', (e) => {
     clearTimeout(leaveTimer);
     if (shouldSkipLink(link)) return;
 
-    // Ha már kezeljük ezt a linket, ne indítsuk újra a timert
+    // If we're already tracking this link, don't restart the timer
     if (currentLink === link) return;
 
     currentLink = link;
     clearTimeout(hoverTimer);
 
-    // A pillanatnyi pozíciót a timer tüzelésekor vesszük (mousemove trackingből),
-    // így az ikon mindig oda kerül, ahol a kurzor ténylegesen van
+    // We capture the current position at timer fire time (from mousemove tracking),
+    // so the icon always appears where the cursor actually is
     hoverTimer = setTimeout(() => {
       showTriggerButton(link);
     }, 250);
@@ -105,7 +105,7 @@ document.addEventListener('mouseout', (e) => {
   }
 });
 
-// Folyamatosan követjük a kurzor pillanatnyi pozícióját és szükség szerint frissítjük a gomb helyzetét
+// Continuously track the cursor's current position and update the button position as needed
 document.addEventListener('mousemove', (e) => {
   currentMouseX = e.pageX;
   currentMouseY = e.pageY;
@@ -134,11 +134,11 @@ function updateTriggerButtonPosition() {
   let posLeft = currentMouseX + gap;
   let posTop  = currentMouseY - iconSize - gap;
 
-  // Ha jobbra kilógna → balra toljuk
+  // If it would overflow to the right → shift it to the left
   if (currentClientX + gap + iconSize > window.innerWidth) {
     posLeft = currentMouseX - iconSize - gap;
   }
-  // Ha felfelé kilógna → lefele toljuk
+  // If it would overflow upwards → shift it downwards
   if (currentClientY - iconSize - gap < 0) {
     posTop = currentMouseY + gap;
   }
@@ -156,9 +156,9 @@ function showTriggerButton(link) {
 
   triggerBtn = document.createElement('button');
   triggerBtn.className = 'neo-peek-trigger-btn';
-  triggerBtn.title = 'Előnézet (Peek)';
+  triggerBtn.title = 'Preview (Peek)';
 
-  // Betöltés a pic/peek.svg fájlból
+  // Load from the pic/peek.svg file
   triggerBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/peek.svg')}" alt="Peek" />`;
 
   triggerBtn.style.position = 'absolute';
@@ -202,34 +202,34 @@ function openPeekWindow(url) {
   peekContainer = document.createElement('div');
   peekContainer.className = 'neo-peek-container';
 
-  // 1. Fejléc felépítése
+  // 1. Build the header
   const header = document.createElement('div');
   header.className = 'neo-peek-header';
 
-  // Bal oldali címtartó elem (alapértelmezetten a "Betöltés..." szöveggel)
+  // Left-side title element (defaults to "Loading...")
   const titleContainer = document.createElement('div');
   titleContainer.className = 'neo-peek-title';
-  titleContainer.innerText = 'Betöltés...';
+  titleContainer.innerText = 'Loading...';
   header.appendChild(titleContainer);
 
-  // Jobb oldali gombcsoport konténer
+  // Right-side button group container
   const actionsContainer = document.createElement('div');
   actionsContainer.className = 'neo-peek-actions';
 
-  // "Megnyitás új lapon" gomb (w.svg-ből betöltve)
+  // "Open in new tab" button (loaded from w.svg)
   const openTabBtn = document.createElement('button');
   openTabBtn.className = 'neo-peek-btn';
-  openTabBtn.title = 'Megnyitás új lapon';
+  openTabBtn.title = 'Open in new tab';
   openTabBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/w.svg')}" alt="Open Tab" />`;
   openTabBtn.addEventListener('click', () => {
     window.open(url, '_blank');
     closePeekWindow();
   });
 
-  // "Bezárás" gomb (x.svg-ből betöltve)
+  // "Close" button (loaded from x.svg)
   const closeBtn = document.createElement('button');
   closeBtn.className = 'neo-peek-btn neo-peek-close-btn';
-  closeBtn.title = 'Bezárás';
+  closeBtn.title = 'Close';
   closeBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/x.svg')}" alt="Close" />`;
   closeBtn.addEventListener('click', closePeekWindow);
 
@@ -238,23 +238,23 @@ function openPeekWindow(url) {
   header.appendChild(actionsContainer);
   peekContainer.appendChild(header);
 
-  // 2. Iframe felépítése és cím-kiszedés
+  // 2. Build the iframe and extract the page title
   const iframe = document.createElement('iframe');
   iframe.className = 'neo-peek-iframe';
   iframe.src = url;
 
-  // Amikor betölt az iframe, megpróbáljuk kiolvasni a címet
+  // When the iframe loads, try to read the page title
   iframe.addEventListener('load', () => {
     try {
       if (iframe.contentWindow && iframe.contentWindow.document.title) {
         titleContainer.innerText = iframe.contentWindow.document.title;
-        titleContainer.title = iframe.contentWindow.document.title; // Tooltip a hosszú címekhez
+        titleContainer.title = iframe.contentWindow.document.title; // Tooltip for long titles
       } else {
-        // Ha üres a cím, az URL-t használjuk
+        // If the title is empty, fall back to the URL
         titleContainer.innerText = url;
       }
     } catch (e) {
-      // CORS hiba esetén (ha külső domain nem engedi az olvasást), az URL-t rakjuk ki fallbackként
+      // On CORS error (cross-origin domain blocks access), use the URL as fallback
       titleContainer.innerText = url;
       titleContainer.title = url;
     }
@@ -263,11 +263,11 @@ function openPeekWindow(url) {
   peekContainer.appendChild(iframe);
   document.body.appendChild(peekContainer);
   
-  // Fókusz beállítása az Escape esemény azonnali kezeléséhez
+  // Set focus for immediate Escape key handling
   peekContainer.tabIndex = -1;
   peekContainer.focus();
 
-  // Háttér görgetés letiltása
+  // Disable background scrolling
   document.body.style.overflow = 'hidden';
   
   peekOverlay.addEventListener('click', closePeekWindow);
@@ -282,11 +282,11 @@ function closePeekWindow() {
     peekOverlay.remove();
     peekOverlay = null;
   }
-  // Háttér görgetés visszaállítása
+  // Restore background scrolling
   document.body.style.overflow = '';
 }
 
-// Globális billentyűzet-eseménykezelő az ESC gomb megnyomására
+// Global keyboard event handler for the ESC key
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closePeekWindow();

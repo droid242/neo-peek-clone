@@ -1,81 +1,63 @@
 # Neo Peek Extension
 
-Egy Chrome böngészőbővítmény, amely lehetővé teszi linkek gyors előnézetét anélkül, hogy el kellene navigálni az aktuális oldalról. A Neo Browser Peek funkciójára épülő, önálló megoldás.
+A Chrome browser extension that allows quick previews of links without navigating away from the current page. A standalone solution inspired by the Peek feature of Neo Browser.
 
----
+## Features
+- **Peek icon**: When you hover over a link, a small floating icon appears next to the cursor.
+- **Preview window**: Clicking the icon opens the linked page in a popup window using an iframe.
+- **Open in new tab**: The linked page can be opened directly in a new tab from the preview window header.
+- **Close**: The preview window can be closed with the header X button, the ESC key, or by clicking on the dimmed background.
+- **Background scroll lock**: While the preview window is open, scrolling of the background page is disabled.
+- **Smart filtering**: The extension automatically skips links where a preview is not relevant:
+  - Navigation menus (e.g. Home, About, Contact)
+  - Pagination bars
+  - Lightbox / image gallery links
 
-## Funkciók
+## Installation from Chrome Web Store
+The extension is available in the Chrome Web Store:
+https://chromewebstore.google.com/detail/neo-peek-clone/eocdllcnhkkfhfpnbmgkkiekcefjecni
 
-- **Peek ikon**: Ha az egeret egy linkre viszed, egy kis lebegő ikon jelenik meg a kurzor mellett.
-- **Előnézeti ablak**: Az ikonra kattintva egy felugró ablakban betöltődik a hivatkozott oldal, iframe segítségével.
-- **Dinamikus ikonkövetés**: Hosszabb link esetén az ikon követi a kurzozt a linken belül, így mindig kéznél van.
-- **Megnyitás új lapon**: Az előnézeti ablak fejlécéből közvetlenül megnyitható a hivatkozott oldal egy új lapon.
-- **Bezárás**: Az előnézeti ablak bezárható a fejléc X gombjával, az ESC billentyűvel, vagy az elsötétített háttérre kattintva.
-- **Háttér görgetés letiltása**: Amíg az előnézeti ablak nyitva van, a háttér oldal görgetése le van tiltva.
-- **Intelligens szűrés**: A bővítmény automatikusan kihagyja azokat a linkeket, amelyeknél az előnézet nem releváns:
-  - Navigációs menük (pl. Főoldal, Rólunk, Kapcsolat)
-  - Lapozó sávok (pagination)
-  - Lightbox / képgaléria hivatkozások
-  - Közvetlen képfájlokra mutató linkek (`.jpg`, `.png`, `.webp` stb.)
+## Installation (developer mode)
+1. Download / copy the extension files to a permanent folder on your computer.
+2. Open the browser's extensions page:
+   * Chrome/Perplexity Comet: `chrome://extensions`
+   * Edge: `edge://extensions`
+   * Brave: `brave://extensions`
+   * Opera: `opera://extensions`
+   * Vivaldi: `vivaldi://extensions`
+3. Enable the **Developer mode** toggle in the top-right (or left-side) corner.
+4. Click the **Load unpacked** button.
+5. Select the folder that contains the `manifest.json` file.
 
----
+## Usage
+1. Navigate to any webpage.
+2. Hover over a link – after a short delay, the Peek icon will appear.
+3. Click the icon to open the preview window.
+4. In the preview window:
+   - You can scroll the content of the loaded page.
+   - The title of the loaded page is displayed on the left side of the header.
+   - The buttons on the right let you open the page in a new tab or close the window.
+5. The window can be closed:
+   - By clicking the **X** button.
+   - By pressing the **ESC** key.
+   - By clicking on the dimmed background.
 
-## Telepítés (fejlesztői mód)
-
-1. Töltsd le vagy klónozd a tárolót:
-   ```bash
-   git clone https://github.com/droid242/neo-peek-clone.git
-   ```
-2. Nyisd meg a Chrome-ban a `chrome://extensions/` oldalt.
-3. Kapcsold be a **Fejlesztői mód** kapcsolót (jobb felső sarok).
-4. Kattints a **Kicsomagolt bővítmény betöltése** gombra.
-5. Válaszd ki a letöltött/klónozott mappa helyét.
-
----
-
-## Használat
-
-1. Navigálj bármilyen weboldalra.
-2. Vigyük az egeret egy linkre – rövid késleltetés után megjelenik a Peek ikon.
-3. Kattints az ikonra az előnézeti ablak megnyitásához.
-4. Az előnézeti ablakban:
-   - Görgetheted a betöltött oldal tartalmát.
-   - A fejléc bal oldalán látható a betöltött oldal címe.
-   - A jobb oldalon lévő gombokkal megnyithatod az oldalt egy új lapon, vagy bezárhatod az ablakot.
-5. Az ablak bezárható:
-   - Az **X** gombra kattintva.
-   - Az **ESC** billentyű megnyomásával.
-   - Az elsötétített háttérre kattintva.
-
----
-
-## Fájlstruktúra
-
+## File Structure
 ```
 neo-peek-extension/
-├── manifest.json       # Bővítmény beállítások (Manifest V3)
-├── content.js          # Fő logika: ikon megjelenítés, szűrés, peek ablak
-├── styles.css          # Stílusok: ikon, overlay, ablak, fejléc
-├── background.js       # Service worker (háttérfolyamatok)
-├── rules.json          # Hálózati szabályok (declarativeNetRequest)
-├── .gitignore
+├── manifest.json       # Extension settings (Manifest V3)
+├── content.js          # Core logic: icon display, filtering, peek window
+├── styles.css          # Styles: icon, overlay, window, header
+├── background.js       # Service worker (background processes)
+├── rules.json          # Network rules (declarativeNetRequest)
 └── pic/
-    ├── peek.svg        # Peek indítóikon
-    ├── w.svg           # "Megnyitás új lapon" gomb ikonja
-    └── x.svg           # "Bezárás" gomb ikonja
+    ├── peek.svg        # Peek trigger icon
+    ├── w.svg           # "Open in new tab" button icon
+    └── x.svg           # "Close" button icon
 ```
 
 ---
 
-## Technikai megjegyzések
-
-- A bővítmény **Manifest V3** szabványt követi.
-- Az SVG ikonok a `pic/` mappából töltődnek be, így könnyen cserélhetők vagy testreszabhatók.
-- Az ikonok árnyéka CSS `filter: drop-shadow()` segítségével készül, ami automatikusan leköveti az ikon alakját (kör, háromszög stb.).
-- Az iframe-es előnézet **CORS korlátozások** miatt egyes oldalakon nem töltődhet be (X-Frame-Options fejléc), ilyenkor az URL jelenik meg a fejlécben.
-
----
-
-## Licenc
-
-Ez a projekt személyes és oktatási célból készült. Megosztás és továbbfejlesztés előtt kérjük, ellenőrizd a vonatkozó feltételeket.
+## Technical Notes
+- The extension follows the **Manifest V3** standard.
+- The iframe preview may fail to load on some sites due to **CORS restrictions** (X-Frame-Options header); in such cases the URL is displayed in the header instead.

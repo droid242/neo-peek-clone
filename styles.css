@@ -1,11 +1,11 @@
 .neo-peek-trigger-btn {
   position: absolute;
   z-index: 2147483647;
-  width: 24px;  
-  height: 24px; 
-  background: transparent !important; 
-  border: none !important;            
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); 
+  width: 32px;
+  height: 32px;
+  background: transparent !important;
+  border: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -13,12 +13,13 @@
   justify-content: center;
   opacity: 0;
   animation: fadeInIcon 0.2s ease-out forwards;
-  transition: filter 0.15s ease; /* Csak a szűrő animálódik */
+  transition: filter 0.15s ease;
+  /* Only the filter is animated */
 }
 
-/* Hover állapot: nincs skálázás, csak tűéles fényerő és árnyék */
+/* Hover state: no scaling, just crisp brightness and shadow */
 .neo-peek-trigger-btn:hover {
-  filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
 .neo-peek-trigger-btn svg,
@@ -29,20 +30,20 @@
   pointer-events: none;
 }
 
-/* Mögöttes sötétítés */
+/* Background overlay / dimming layer */
 .neo-peek-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.6); 
-  z-index: 2147483640; 
-  backdrop-filter: blur(2px); 
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2147483640;
+  backdrop-filter: blur(2px);
   animation: fadeInOverlay 0.2s ease-out;
 }
 
-/* A nagy Peek ablak konténer */
+/* Main Peek window container */
 .neo-peek-container {
   position: fixed;
   top: 50%;
@@ -53,27 +54,27 @@
   background: white;
   border-radius: 16px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  z-index: 2147483641; 
+  z-index: 2147483641;
   border: 1px solid #374151;
   overflow: hidden;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   animation: peekSlideIn 0.3s ease-out;
 }
 
-/* Fix felső fejléc sáv */
+/* Fixed top header bar */
 .neo-peek-header {
   height: 45px;
-  background: #1f2937; 
+  background: #1f2937;
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   padding: 0 15px;
   border-bottom: 1px solid #374151;
   box-sizing: border-box;
 }
 
-/* Bal oldali dinamikus cím */
+/* Dynamic page title on the left */
 .neo-peek-title {
   color: #d1d5db;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -81,34 +82,35 @@
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
-  max-width: 60%; 
+  text-overflow: ellipsis;
+  max-width: 60%;
 }
 
-/* Jobb oldali gombcsoport */
+/* Right-side button group */
 .neo-peek-actions {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* 2. A fejléc két SVG gombjának alapstílusa */
+/* Base style for the two SVG header buttons */
 .neo-peek-btn {
   background: transparent !important;
   border: none !important;
   cursor: pointer;
-  width: 24px;  
+  width: 24px;
   height: 24px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: filter 0.15s ease; /* Itt is csak a szűrő animálódik, mozgás nincs */
+  transition: filter 0.15s ease;
+  /* Only the filter is animated here, no movement */
 }
 
-/* Fejléc gombok hover állapota: Tisztán elmosódásmentes felvillanás */
+/* Header button hover state: crisp, blur-free brightness flash */
 .neo-peek-btn:hover {
-  filter: brightness(1.2) drop-shadow(0 1px 4px rgba(0,0,0,0.3));
+  filter: brightness(1.2) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
 }
 
 .neo-peek-btn svg,
@@ -119,25 +121,39 @@
   pointer-events: none;
 }
 
-/* Az iframe */
+/* The iframe */
 .neo-peek-iframe {
   width: 100%;
-  flex-grow: 1; 
+  flex-grow: 1;
   border: none;
   background: white;
   display: block;
 }
 
 @keyframes fadeInIcon {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes peekSlideIn {
-  from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

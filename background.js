@@ -16,7 +16,7 @@ const RULES = [
   }
 ];
 
-// Szabályok regisztrálása induláskor
+// Register rules on install / startup
 chrome.runtime.onInstalled.addListener(() => {
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [1],
