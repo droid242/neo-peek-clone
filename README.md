@@ -14,7 +14,7 @@ A Chrome browser extension that allows quick previews of links without navigatin
   - Lightbox / image gallery links
 
 ## Installation from Chrome Web Store
-The extension is available in the Chrome Web Store:
+The extension is available in the Chrome Web Store:  
 https://chromewebstore.google.com/detail/neo-peek-clone/eocdllcnhkkfhfpnbmgkkiekcefjecni
 
 ## Installation (developer mode)
