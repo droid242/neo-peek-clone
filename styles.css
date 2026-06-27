@@ -5,7 +5,6 @@
   height: 32px;
   background: transparent !important;
   border: none !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -13,21 +12,38 @@
   justify-content: center;
   opacity: 0;
   animation: fadeInIcon 0.2s ease-out forwards;
-  transition: filter 0.15s ease;
-  /* Only the filter is animated */
+  /* Reset any styles that might leak from the host page */
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
 }
 
-/* Hover state: no scaling, just crisp brightness and shadow */
+/* Ensure no background/border/shadow is inherited on hover from the host page */
 .neo-peek-trigger-btn:hover {
-  filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
+/* Apply filters directly to the img/svg element to guarantee the drop-shadow matches the vector shape rather than the button's rectangular border box */
 .neo-peek-trigger-btn svg,
 .neo-peek-trigger-btn img {
   width: 100%;
   height: 100%;
   display: block;
   pointer-events: none;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: filter 0.15s ease;
+}
+
+/* Hover state: apply brightness and shadow filters to the vector icon */
+.neo-peek-trigger-btn:hover svg,
+.neo-peek-trigger-btn:hover img {
+  filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
 /* Background overlay / dimming layer */

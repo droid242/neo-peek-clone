@@ -12,6 +12,7 @@ if (typeof hoverTimer === 'undefined') {
   var lastPlacedX = 0;
   var lastPlacedY = 0;
   var isHoveringButton = false;
+  var peekSvgContent = '';
 }
 
 const EXCLUDED_WORDS = [/^\d+$/, /next/i, /prev/i, /page/i, /köv/i, /előző/i, /lapoz/i, /mutass/i, /show/i];
@@ -128,8 +129,8 @@ document.addEventListener('mousemove', (e) => {
 function updateTriggerButtonPosition() {
   if (!triggerBtn) return;
 
-  const iconSize = 24;
-  const gap = 10;
+  const iconSize = 32;
+  const gap = 13;
 
   let posLeft = currentMouseX + gap;
   let posTop  = currentMouseY - iconSize - gap;
@@ -158,8 +159,12 @@ function showTriggerButton(link) {
   triggerBtn.className = 'neo-peek-trigger-btn';
   triggerBtn.title = 'Preview (Peek)';
 
-  // Load from the pic/peek.svg file
-  triggerBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/peek.svg')}" alt="Peek" />`;
+  // Load from the pic/peek.svg file (inlined if loaded, fallback to img tag)
+  if (peekSvgContent) {
+    triggerBtn.innerHTML = peekSvgContent;
+  } else {
+    triggerBtn.innerHTML = `<img src="${chrome.runtime.getURL('pic/peek.svg')}" alt="Peek" />`;
+  }
 
   triggerBtn.style.position = 'absolute';
   updateTriggerButtonPosition();
@@ -292,3 +297,24 @@ document.addEventListener('keydown', (e) => {
     closePeekWindow();
   }
 });
+
+// Remove the trigger button when scrolling or wheeling to prevent blocking scroll
+window.addEventListener('scroll', () => {
+  if (triggerBtn) {
+    removeTriggerButton();
+  }
+}, { capture: true, passive: true });
+
+window.addEventListener('wheel', () => {
+  if (triggerBtn) {
+    removeTriggerButton();
+  }
+}, { passive: true });
+
+// Fetch the SVG content to inline it directly, which enables clean CSS drop-shadow filters on the vector paths
+fetch(chrome.runtime.getURL('pic/peek.svg'))
+  .then(response => response.text())
+  .then(text => {
+    peekSvgContent = text;
+  })
+  .catch(err => console.error('Failed to load peek.svg', err));
